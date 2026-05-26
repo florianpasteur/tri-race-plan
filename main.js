@@ -226,6 +226,7 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
 
     document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    track('preset_select', { race: btn.dataset.race });
 
     $('swim-dist').value = p.swimDist;
     $('swim-unit').value = p.swimUnit;
@@ -311,6 +312,7 @@ function loadFromUrl() {
 
 $('share-btn').addEventListener('click', () => {
   navigator.clipboard.writeText(location.href).then(() => {
+    gtag('event', 'share_click');
     const btn = $('share-btn');
     btn.textContent = '✓ Copied!';
     btn.classList.add('copied');
@@ -318,6 +320,35 @@ $('share-btn').addEventListener('click', () => {
       btn.textContent = 'Share';
       btn.classList.remove('copied');
     }, 2000);
+  });
+});
+
+// ─── Analytics ────────────────────────────────────────────────────────────────
+
+function track(eventName, params) {
+  if (typeof gtag === 'function') gtag('event', eventName, params);
+}
+
+// Track inputs on blur (avoids firing on every keystroke)
+[
+  ['swim-dist',  'swim_distance'],
+  ['swim-unit',  'swim_unit'],
+  ['swim-pace',  'swim_pace'],
+  ['swim-time',  'swim_time'],
+  ['bike-dist',  'bike_distance'],
+  ['bike-unit',  'bike_unit'],
+  ['bike-speed', 'bike_speed'],
+  ['bike-time',  'bike_time'],
+  ['run-dist',   'run_distance'],
+  ['run-unit',   'run_unit'],
+  ['run-pace',   'run_pace'],
+  ['run-time',   'run_time'],
+  ['t1-time',    't1'],
+  ['t2-time',    't2'],
+].forEach(([id, field]) => {
+  $(id).addEventListener('blur', () => {
+    const val = $(id).value;
+    if (val) track('input_change', { field, value: val });
   });
 });
 
