@@ -9,7 +9,8 @@ const $ = id => document.getElementById(id);
  */
 function autoFormatTime(input) {
   const raw = input.value.replace(/\D/g, '');
-  if (raw.length < 3) return;   // too short to be ambiguous — leave as-is
+  if (raw.length === 0) return;
+  if (raw.length === 1 || raw.length === 2) { input.value = `${raw}:00`; return; }
 
   const secs  = raw.slice(-2);
   const rest  = raw.slice(0, -2);
