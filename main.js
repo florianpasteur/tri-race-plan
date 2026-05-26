@@ -2,6 +2,27 @@
 
 const $ = id => document.getElementById(id);
 
+/**
+ * On blur, reformat a raw digit string into H:MM:SS or M:SS.
+ * e.g. "207" → "2:07", "503" → "5:03", "11520" → "1:15:20"
+ * Digits are consumed right-to-left: last 2 = secs, next 2 = mins, rest = hours.
+ */
+function autoFormatTime(input) {
+  const raw = input.value.replace(/\D/g, '');
+  if (raw.length < 3) return;   // too short to be ambiguous — leave as-is
+
+  const secs  = raw.slice(-2);
+  const rest  = raw.slice(0, -2);
+  const mins  = rest.slice(-2);
+  const hours = rest.slice(0, -2);
+
+  if (hours) {
+    input.value = `${parseInt(hours, 10)}:${mins.padStart(2, '0')}:${secs.padStart(2, '0')}`;
+  } else {
+    input.value = `${parseInt(mins, 10)}:${secs.padStart(2, '0')}`;
+  }
+}
+
 /** Parse "M:SS" or "H:MM:SS" string into total seconds, or null. */
 function parseTime(str) {
   if (!str?.trim()) return null;
@@ -208,6 +229,11 @@ on('run-dist',   'input', update);
 
 on('t1-time', 'input', update);
 on('t2-time', 'input', update);
+
+// Auto-format bare digit sequences on blur for all time-based fields
+['swim-time', 'bike-time', 'run-time', 't1-time', 't2-time', 'run-pace', 'swim-pace'].forEach(id => {
+  $(id).addEventListener('blur', () => { autoFormatTime($(id)); update(); });
+});
 
 // ─── Preset race distances ────────────────────────────────────────────────────
 
