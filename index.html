@@ -452,6 +452,76 @@
             background: #f0fdf4;
         }
 
+        .reset-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        /* ── Reset confirmation dialog ── */
+        .dialog-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.35);
+            backdrop-filter: blur(2px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .dialog-backdrop.open { display: flex; }
+
+        .dialog {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem 1.75rem;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(15,23,42,.12);
+            text-align: center;
+        }
+        .dialog h3 {
+            margin: 0 0 .4rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .dialog p {
+            margin: 0 0 1.2rem;
+            font-size: .875rem;
+            color: var(--muted);
+        }
+        .dialog-actions {
+            display: flex;
+            gap: .6rem;
+            justify-content: center;
+        }
+        .dialog-actions button {
+            flex: 1;
+            padding: .45rem .9rem;
+            border-radius: 999px;
+            border: 1.5px solid var(--border);
+            font-size: .875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color .15s, color .15s, background .15s;
+            background: #fff;
+            color: var(--text);
+        }
+        .dialog-actions .btn-cancel:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+        }
+        .dialog-actions .btn-confirm {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        .dialog-actions .btn-confirm:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
         /* ── Responsive ── */
         @media (max-width: 1100px) and (min-width: 769px) {
             .dist-row {
@@ -630,6 +700,7 @@
         <div class="card-header">
             <span class="step">3</span>
             <h2>Race Summary</h2>
+            <button class="share-btn reset-btn" id="reset-btn">&#8635; Reset</button>
             <button class="share-btn" id="share-btn">&#128279; Share</button>
         </div>
         <div class="card-body">
@@ -685,6 +756,17 @@
     </section>
 
 </main>
+
+<div class="dialog-backdrop" id="reset-dialog">
+    <div class="dialog">
+        <h3>Reset everything?</h3>
+        <p>All distances, paces, and times will be cleared.</p>
+        <div class="dialog-actions">
+            <button class="btn-cancel" id="reset-cancel">Cancel</button>
+            <button class="btn-confirm" id="reset-confirm">Reset</button>
+        </div>
+    </div>
+</div>
 
 <script src="main.js"></script>
 </body>

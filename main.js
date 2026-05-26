@@ -235,6 +235,34 @@ on('t2-time', 'input', update);
   $(id).addEventListener('blur', () => { autoFormatTime($(id)); update(); });
 });
 
+// ─── Enter-key focus progression ─────────────────────────────────────────────
+// Pace/speed and time columns advance independently so swim-pace → bike-speed
+// and swim-time → bike-time, keeping the user in the same "column".
+const ENTER_NEXT = {
+  'swim-dist':  'bike-dist',
+  'bike-dist':  'run-dist',
+  'run-dist':   'swim-pace',
+  'swim-pace':  'bike-speed',
+  'swim-time':  'bike-time',
+  'bike-speed': 'run-pace',
+  'bike-time':  'run-time',
+  'run-pace':   't1-time',
+  'run-time':   't1-time',
+  't1-time':    't2-time',
+};
+
+Object.keys(ENTER_NEXT).forEach(id => {
+  $(id).addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    $(ENTER_NEXT[id]).focus();
+  });
+});
+
+$('t2-time').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); $('t2-time').blur(); }
+});
+
 // ─── Preset race distances ────────────────────────────────────────────────────
 
 const PRESETS = {
@@ -333,6 +361,41 @@ function loadFromUrl() {
   if (p.has('t1')) $('t1-time').value = p.get('t1');
   if (p.has('t2')) $('t2-time').value = p.get('t2');
 }
+
+// ─── Reset button ────────────────────────────────────────────────────────────
+
+function doReset() {
+  ['swim-dist', 'swim-pace', 'swim-time',
+   'bike-dist', 'bike-speed', 'bike-time',
+   'run-dist',  'run-pace',  'run-time',
+   't1-time',   't2-time'].forEach(id => { $(id).value = ''; });
+
+  $('swim-unit').value = 'm';
+  $('bike-unit').value = 'km';
+  $('run-unit').value  = 'km';
+
+  prevSwimUnit = 'm';
+  prevBikeUnit = 'km';
+  prevRunUnit  = 'km';
+
+  lastEdited.swim = 'pace';
+  lastEdited.bike = 'speed';
+  lastEdited.run  = 'pace';
+
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+
+  history.replaceState(null, '', location.pathname);
+  track('reset_click');
+  update();
+}
+
+function openResetDialog()  { $('reset-dialog').classList.add('open'); }
+function closeResetDialog() { $('reset-dialog').classList.remove('open'); }
+
+$('reset-btn').addEventListener('click', openResetDialog);
+$('reset-cancel').addEventListener('click', closeResetDialog);
+$('reset-confirm').addEventListener('click', () => { closeResetDialog(); doReset(); });
+$('reset-dialog').addEventListener('click', e => { if (e.target === $('reset-dialog')) closeResetDialog(); });
 
 // ─── Share button ─────────────────────────────────────────────────────────────
 
