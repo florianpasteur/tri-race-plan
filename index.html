@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tri Race Plan — Calculator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --swim:       #0ea5e9;
+      --swim-light: #e0f2fe;
+      --bike:       #f59e0b;
+      --bike-light: #fef3c7;
+      --run:        #22c55e;
+      --run-light:  #dcfce7;
+      --t:          #8b5cf6;
+      --t-light:    #ede9fe;
+      --bg:         #f1f5f9;
+      --card:       #ffffff;
+      --border:     #e2e8f0;
+      --text:       #0f172a;
+      --muted:      #64748b;
+      --r:          14px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #fff;
+      padding: 2.25rem 1rem 1.75rem;
+      text-align: center;
+    }
+    header h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; letter-spacing: -0.02em; }
+    header p  { margin-top: .35rem; color: #94a3b8; font-size: .9rem; }
+
+    /* ── Layout ── */
+    main {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 1.75rem 1rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ── Card ── */
+    .card { background: var(--card); border-radius: var(--r); border: 1px solid var(--border); overflow: hidden; }
+    .card-header {
+      padding: .9rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: #fafbfc;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .step {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--text); color: #fff;
+      font-size: .72rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-header h2 {
+      font-size: .78rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .07em; color: var(--muted);
+      flex: 1;
+    }
+    .card-body { padding: 1.25rem; }
+
+    /* ── Preset buttons ── */
+    .presets { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .preset-btn {
+      padding: .28rem .75rem;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .preset-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+    .preset-btn.active { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+
+    /* ── Inputs & Selects ── */
+    input, select {
+      font-family: inherit;
+      font-size: .95rem;
+      color: var(--text);
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: .45rem .7rem;
+      outline: none;
+      width: 100%;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    input:focus, select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+    }
+    input::placeholder { color: #cbd5e1; }
+    input[type="number"] { -moz-appearance: textfield; }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    /* ── Sport dot ── */
+    .sport-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .swim-dot { background: var(--swim); }
+    .bike-dot { background: var(--bike); }
+    .run-dot  { background: var(--run);  }
+
+    .sport-label {
+      display: flex; align-items: center; gap: .45rem;
+      font-weight: 600; font-size: .9rem; white-space: nowrap;
+    }
+
+    /* ══ Section 1 — Distances ══ */
+    .dist-grid { display: flex; flex-direction: column; gap: .75rem; }
+    .dist-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 130px;
+      gap: .6rem;
+      align-items: center;
+    }
+
+    /* ══ Section 2 — Pace ══ */
+    .pace-grid { display: flex; flex-direction: column; gap: .85rem; }
+    .pace-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 28px 130px;
+      gap: .6rem;
+      align-items: center;
+    }
+
+    .pace-input-wrap { display: flex; align-items: stretch; }
+    .pace-input-wrap input {
+      flex: 1; min-width: 0;
+      border-radius: 8px 0 0 8px;
+      border-right: none;
+    }
+    .pace-input-wrap input:focus { z-index: 1; position: relative; }
+    .pace-unit-badge {
+      display: flex; align-items: center;
+      padding: 0 .55rem;
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-left: none;
+      border-radius: 0 8px 8px 0;
+      font-size: .75rem; font-weight: 500; color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .arrow-sep { text-align: center; color: #94a3b8; font-size: 1rem; user-select: none; }
+
+    .pace-divider {
+      border: none; border-top: 1px dashed var(--border);
+      margin: .15rem 0;
+    }
+
+    .t-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 5px;
+      background: var(--t-light); color: var(--t);
+      font-size: .7rem; font-weight: 700; flex-shrink: 0;
+    }
+    .transition-label {
+      display: flex; align-items: center; gap: .45rem;
+      font-weight: 600; font-size: .9rem;
+      grid-column: 1 / 4;
+    }
+
+    /* Section 2 helper text */
+    .field-hint {
+      font-size: .72rem; color: var(--muted);
+      margin-top: -.3rem;
+      padding-left: 110px;
+    }
+
+    /* ══ Section 3 — Results ══ */
+    .results-list { display: flex; flex-direction: column; }
+
+    .result-item {
+      display: grid;
+      grid-template-columns: 110px 1fr 100px;
+      gap: .5rem;
+      align-items: center;
+      padding: .65rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .result-item:last-child { border-bottom: none; }
+
+    .result-label { display: flex; align-items: center; gap: .45rem; font-size: .9rem; font-weight: 500; }
+    .result-label.t-label { color: var(--t); }
+
+    .result-bar-track {
+      height: 7px; background: #f1f5f9; border-radius: 99px; overflow: hidden;
+    }
+    .result-bar {
+      height: 100%; border-radius: 99px;
+      transition: width .35s cubic-bezier(.4,0,.2,1);
+    }
+    .swim-bar { background: var(--swim); }
+    .bike-bar { background: var(--bike); }
+    .run-bar  { background: var(--run);  }
+    .t-bar    { background: var(--t);    }
+
+    .result-time {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600; font-size: .95rem;
+      text-align: right;
+    }
+    .result-time.muted { color: var(--muted); font-weight: 500; }
+
+    .total-row {
+      margin-top: 1.1rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .total-label { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .total-time  { font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+
+    /* ── Share button ── */
+    .share-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .35rem .9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      font-family: inherit; font-size: .8rem; font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .share-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+    .share-btn.copied { border-color: #22c55e; color: #22c55e; background: #f0fdf4; }
+
+    /* ── Responsive ── */
+    @media (max-width: 540px) {
+      .dist-row  { grid-template-columns: 80px 1fr 110px; }
+      .pace-row  { grid-template-columns: 80px 1fr 22px 110px; }
+      .field-hint { padding-left: 80px; }
+      .result-item { grid-template-columns: 80px 1fr 90px; }
+    }
+    @media (max-width: 400px) {
+      .pace-row {
+        grid-template-columns: 1fr 22px 1fr;
+        grid-template-rows: auto auto;
+      }
+      .pace-row .sport-label { grid-column: 1 / -1; }
+      .transition-label { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏁 Tri Race Calculator</h1>
+  <p>Plan your race time and target pace for every segment</p>
+</header>
+
+<main>
+
+  <!-- ══ 1 — Distances ══ -->
+  <section class="card">
+    <div class="card-header">
+      <span class="step">1</span>
+      <h2>Race Distances</h2>
+      <div class="presets">
+        <button class="preset-btn" data-race="sprint">Sprint</button>
+        <button class="preset-btn" data-race="olympic">Olympic</button>
+        <button class="preset-btn" data-race="t100">T100</button>
+        <button class="preset-btn" data-race="703">70.3</button>
+        <button class="preset-btn" data-race="ironman">Ironman</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="dist-grid">
+
+        <div class="dist-row">
+          <div class="sport-label"><span class="sport-dot swim-dot"></span>🏊 Swim</div>
+          <input type="number" id="swim-dist" placeholder="1500" min="0" step="any" />
+          <select id="swim-unit">
+            <option value="m">meters</option>
+            <option value="yd">yards</option>
+            <option value="km">km</option>
+            <option value="mi">miles</option>
+          </select>
+        </div>
+
+        <div class="dist-row">
+          <div class="sport-label"><span class="sport-dot bike-dot"></span>🚴 Bike</div>
+          <input type="number" id="bike-dist" placeholder="40" min="0" step="any" />
+          <select id="bike-unit">
+            <option value="km">km</option>
+            <option value="mi">miles</option>
+          </select>
+        </div>
+
+        <div class="dist-row">
+          <div class="sport-label"><span class="sport-dot run-dot"></span>🏃 Run</div>
+          <input type="number" id="run-dist" placeholder="10" min="0" step="any" />
+          <select id="run-unit">
+            <option value="km">km</option>
+            <option value="mi">miles</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 2 — Pace & Transitions ══ -->
+  <section class="card">
+    <div class="card-header">
+      <span class="step">2</span>
+      <h2>Target Pace &amp; Transitions</h2>
+    </div>
+    <div class="card-body">
+      <div class="pace-grid">
+
+        <!-- Swim -->
+        <div class="pace-row">
+          <div class="sport-label"><span class="sport-dot swim-dot"></span>🏊 Swim</div>
+          <div class="pace-input-wrap">
+            <input type="text" id="swim-pace" placeholder="1:45" maxlength="6" inputmode="numeric" />
+            <span class="pace-unit-badge" id="swim-pace-label">/ 100m</span>
+          </div>
+          <span class="arrow-sep">⇄</span>
+          <input type="text" id="swim-time" placeholder="0:26:15" maxlength="8" inputmode="numeric" />
+        </div>
+
+        <!-- Bike -->
+        <div class="pace-row">
+          <div class="sport-label"><span class="sport-dot bike-dot"></span>🚴 Bike</div>
+          <div class="pace-input-wrap">
+            <input type="number" id="bike-speed" placeholder="32.5" min="1" max="120" step="0.1" />
+            <span class="pace-unit-badge" id="bike-speed-label">km/h</span>
+          </div>
+          <span class="arrow-sep">⇄</span>
+          <input type="text" id="bike-time" placeholder="1:13:50" maxlength="8" inputmode="numeric" />
+        </div>
+
+        <!-- Run -->
+        <div class="pace-row">
+          <div class="sport-label"><span class="sport-dot run-dot"></span>🏃 Run</div>
+          <div class="pace-input-wrap">
+            <input type="text" id="run-pace" placeholder="5:30" maxlength="6" inputmode="numeric" />
+            <span class="pace-unit-badge" id="run-pace-label">/ km</span>
+          </div>
+          <span class="arrow-sep">⇄</span>
+          <input type="text" id="run-time" placeholder="0:55:00" maxlength="8" inputmode="numeric" />
+        </div>
+
+        <p class="field-hint">Enter pace <em>or</em> time — the other updates automatically.</p>
+
+        <div class="pace-divider"></div>
+
+        <!-- T1 -->
+        <div class="pace-row">
+          <div class="transition-label"><span class="t-badge">T1</span>Transition 1</div>
+          <input type="text" id="t1-time" placeholder="5:00" value="5:00" maxlength="5" inputmode="numeric" />
+        </div>
+
+        <!-- T2 -->
+        <div class="pace-row">
+          <div class="transition-label"><span class="t-badge">T2</span>Transition 2</div>
+          <input type="text" id="t2-time" placeholder="3:00" value="3:00" maxlength="5" inputmode="numeric" />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 3 — Results ══ -->
+  <section class="card">
+    <div class="card-header">
+      <span class="step">3</span>
+      <h2>Race Summary</h2>
+      <button class="share-btn" id="share-btn">&#128279; Share</button>
+    </div>
+    <div class="card-body">
+      <div class="results-list">
+
+        <div class="result-item">
+          <div class="result-label"><span class="sport-dot swim-dot"></span>🏊 Swim</div>
+          <div class="result-bar-track"><div class="result-bar swim-bar" id="swim-bar" style="width:0%"></div></div>
+          <div class="result-time" id="result-swim">—</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label t-label"><span class="t-badge">T1</span>Transition</div>
+          <div class="result-bar-track"><div class="result-bar t-bar" id="t1-bar" style="width:0%"></div></div>
+          <div class="result-time muted" id="result-t1">—</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label"><span class="sport-dot bike-dot"></span>🚴 Bike</div>
+          <div class="result-bar-track"><div class="result-bar bike-bar" id="bike-bar" style="width:0%"></div></div>
+          <div class="result-time" id="result-bike">—</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label t-label"><span class="t-badge">T2</span>Transition</div>
+          <div class="result-bar-track"><div class="result-bar t-bar" id="t2-bar" style="width:0%"></div></div>
+          <div class="result-time muted" id="result-t2">—</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label"><span class="sport-dot run-dot"></span>🏃 Run</div>
+          <div class="result-bar-track"><div class="result-bar run-bar" id="run-bar" style="width:0%"></div></div>
+          <div class="result-time" id="result-run">—</div>
+        </div>
+
+      </div>
+
+      <div class="total-row">
+        <span class="total-label">Total Time</span>
+        <span class="total-time" id="result-total">—</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "tri-race-plan",
+  "version": "0.1.0",
+  "description": "A triathlon race planning static website",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": ["triathlon", "race-plan"],
+  "author": "florianpasteur",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
