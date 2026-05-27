@@ -1,17 +1,55 @@
-# Tri Race Plan
+# Tri Race Calculator
 
-A static triathlon race calculator hosted on GitHub Pages.
+A static single-page app that predicts your triathlon finish time from distances and target paces or segment times.
 
 **Live site:** https://florianpasteur.github.io/tri-race-plan/
 
 ## Features
 
-- **Race distance presets** — Sprint, Olympic, T100, 70.3, Ironman
-- **Custom distances** — Swim (m / yd / km / mi), Bike (km / mi), Run (km / mi)
-- **Two-way pace ↔ time** — enter either and the other is calculated automatically
-- **Transition times** — T1 and T2 included in the total
-- **Race summary** — proportional progress bars per segment and total finish time
-- **Shareable URLs** — all inputs are encoded as query parameters; use the Share button to copy the link
+### Race distance presets
+One click loads official distances for Sprint, Olympic, T100, 70.3, and Ironman. You can also type custom distances with your choice of unit — meters, yards, km, or miles for the swim; km or miles for bike and run.
+
+### Two-way pace ↔ time
+For each segment you can enter either the pace/speed *or* the total time — the other field updates automatically. Changing the distance recalculates both. Switch units and values are converted in place.
+
+- **Swim** — pace in `M:SS` per 100 m (or 100 yd) ↔ total time
+- **Bike** — speed in km/h (or mph) ↔ total time
+- **Run** — pace in `M:SS` per km (or mile) ↔ total time
+
+### Transition times
+T1 (swim → bike) and T2 (bike → run) are included in the total finish time.
+
+### Race summary
+A live results panel shows each segment's time, a proportional progress bar, and the total finish time. Bars animate as you type.
+
+### Time input shortcuts
+You never have to type colons. When you leave a time field, bare digit sequences are automatically formatted:
+
+| You type | Becomes |
+|---|---|
+| `5` | `5:00` |
+| `45` | `45:00` |
+| `145` | `1:45` |
+| `327` | `3:27` |
+| `11520` | `1:15:20` |
+
+The rule is: last two digits = seconds, next two = minutes, any remainder = hours.
+
+### Enter-key navigation
+Press **Enter** in any field to jump to the next logical input. The cursor follows the column you are working in — so if you are filling in paces you stay in the pace column, and if you are filling in total times you stay in the time column:
+
+```
+swim dist → bike dist → run dist
+    ↓                       ↓
+swim pace → bike speed → run pace → T1 → T2
+swim time → bike time  → run time ↗
+```
+
+### Shareable URLs
+Every change is reflected in the URL query string via `history.replaceState`. Hit **Share** to copy the current URL to the clipboard. Anyone opening the link sees the same distances, paces, and results.
+
+### Reset with confirmation
+The **Reset** button opens a confirmation dialog before clearing all inputs and restoring default units, so accidental clicks don't lose your work.
 
 ## Development
 
@@ -31,7 +69,7 @@ A shared URL encodes the full calculator state:
 | `swim-distance` | number | Swim distance |
 | `swim-unit` | `m` · `yd` · `km` · `mi` | Swim distance unit |
 | `swim-input` | `pace` · `time` | Which field was entered |
-| `swim-pace` | `M:SS` | Pace per 100m (or 100yd) |
+| `swim-pace` | `M:SS` | Pace per 100 m (or 100 yd) |
 | `swim-time` | `H:MM:SS` | Total swim time |
 | `bike-distance` | number | Bike distance |
 | `bike-unit` | `km` · `mi` | Bike distance unit |
