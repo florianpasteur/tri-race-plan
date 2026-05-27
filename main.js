@@ -169,6 +169,31 @@ function update() {
   $('t2-bar').style.width   = pct(t2Secs);
   $('run-bar').style.width  = pct(runSecs);
 
+  // Cumulative times
+  const cumulSwim = swimSecs;
+  const cumulT1   = (cumulSwim ?? 0) + (t1Secs   ?? 0) || null;
+  const cumulBike = (cumulT1   ?? 0) + (bikeSecs  ?? 0) || null;
+  const cumulT2   = (cumulBike ?? 0) + (t2Secs   ?? 0) || null;
+  const cumulRun  = total;
+
+  const setCumul = (wrapId, tooltipId, secs, label) => {
+    const wrap = $(wrapId);
+    const tip  = $(tooltipId);
+    if (secs != null && secs > 0) {
+      tip.textContent = label + fmtHHMMSS(secs);
+      wrap.classList.remove('no-data');
+    } else {
+      tip.textContent = '—';
+      wrap.classList.add('no-data');
+    }
+  };
+
+  setCumul('cumul-swim-wrap', 'cumul-swim', cumulSwim, 'After swim: ');
+  setCumul('cumul-t1-wrap',   'cumul-t1',   cumulT1,   'After T1: ');
+  setCumul('cumul-bike-wrap', 'cumul-bike', cumulBike, 'After bike: ');
+  setCumul('cumul-t2-wrap',   'cumul-t2',   cumulT2,   'After T2: ');
+  setCumul('cumul-run-wrap',  'cumul-run',  cumulRun,  'Finish: ');
+
   syncToUrl();
 }
 

@@ -327,7 +327,7 @@
 
         .result-item {
             display: grid;
-            grid-template-columns: 110px 1fr 100px;
+            grid-template-columns: 110px 1fr 100px 22px;
             gap: .5rem;
             align-items: center;
             padding: .65rem 0;
@@ -537,7 +537,7 @@
             }
 
             .result-item {
-                grid-template-columns: 80px 1fr 85px;
+                grid-template-columns: 80px 1fr 85px 22px;
             }
         }
 
@@ -555,7 +555,7 @@
             }
 
             .result-item {
-                grid-template-columns: 80px 1fr 90px;
+                grid-template-columns: 80px 1fr 90px 22px;
             }
         }
 
@@ -572,6 +572,67 @@
             .transition-label {
                 grid-column: 1 / -1;
             }
+        }
+
+        /* ── Cumulative time icon ── */
+        .cumul-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+        }
+
+        .cumul-icon {
+            font-size: .85rem;
+            line-height: 1;
+            color: var(--muted);
+            cursor: default;
+            opacity: .45;
+            transition: opacity .15s;
+            user-select: none;
+        }
+
+        .cumul-wrap:hover .cumul-icon {
+            opacity: 1;
+        }
+
+        .cumul-tooltip {
+            position: absolute;
+            right: calc(100% + 8px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #0f172a;
+            color: #fff;
+            font-size: .75rem;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            padding: .28rem .6rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .15s;
+            z-index: 20;
+        }
+
+        .cumul-tooltip::after {
+            content: '';
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-left-color: #0f172a;
+        }
+
+        .cumul-wrap:hover .cumul-tooltip {
+            opacity: 1;
+        }
+
+        .cumul-wrap.no-data .cumul-icon {
+            opacity: .2;
         }
     </style>
 </head>
@@ -712,6 +773,10 @@
                         <div class="result-bar swim-bar" id="swim-bar" style="width:0%"></div>
                     </div>
                     <div class="result-time" id="result-swim">—</div>
+                    <div class="cumul-wrap no-data" id="cumul-swim-wrap">
+                        <span class="cumul-icon">⏱</span>
+                        <span class="cumul-tooltip" id="cumul-swim">—</span>
+                    </div>
                 </div>
 
                 <div class="result-item">
@@ -720,6 +785,10 @@
                         <div class="result-bar t-bar" id="t1-bar" style="width:0%"></div>
                     </div>
                     <div class="result-time muted" id="result-t1">—</div>
+                    <div class="cumul-wrap no-data" id="cumul-t1-wrap">
+                        <span class="cumul-icon">⏱</span>
+                        <span class="cumul-tooltip" id="cumul-t1">—</span>
+                    </div>
                 </div>
 
                 <div class="result-item">
@@ -728,6 +797,10 @@
                         <div class="result-bar bike-bar" id="bike-bar" style="width:0%"></div>
                     </div>
                     <div class="result-time" id="result-bike">—</div>
+                    <div class="cumul-wrap no-data" id="cumul-bike-wrap">
+                        <span class="cumul-icon">⏱</span>
+                        <span class="cumul-tooltip" id="cumul-bike">—</span>
+                    </div>
                 </div>
 
                 <div class="result-item">
@@ -736,6 +809,10 @@
                         <div class="result-bar t-bar" id="t2-bar" style="width:0%"></div>
                     </div>
                     <div class="result-time muted" id="result-t2">—</div>
+                    <div class="cumul-wrap no-data" id="cumul-t2-wrap">
+                        <span class="cumul-icon">⏱</span>
+                        <span class="cumul-tooltip" id="cumul-t2">—</span>
+                    </div>
                 </div>
 
                 <div class="result-item">
@@ -744,6 +821,10 @@
                         <div class="result-bar run-bar" id="run-bar" style="width:0%"></div>
                     </div>
                     <div class="result-time" id="result-run">—</div>
+                    <div class="cumul-wrap no-data" id="cumul-run-wrap">
+                        <span class="cumul-icon">⏱</span>
+                        <span class="cumul-tooltip" id="cumul-run">—</span>
+                    </div>
                 </div>
 
             </div>

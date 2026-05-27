@@ -22,6 +22,8 @@ T1 (swim → bike) and T2 (bike → run) are included in the total finish time.
 ### Race summary
 A live results panel shows each segment's time, a proportional progress bar, and the total finish time. Bars animate as you type.
 
+Each segment also has a cumulative clock icon (⏱). Hover it to see the running total elapsed time at the end of that segment — useful to know your time at the mount/dismount line or at the run start.
+
 ### Time input shortcuts
 You never have to type colons. When you leave a time field, bare digit sequences are automatically formatted:
 
