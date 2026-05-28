@@ -71,11 +71,103 @@
         main {
             max-width: 1728px;
             margin: 0 auto;
-            padding: 1.75rem 1.5rem 4rem;
+            padding: 1.75rem 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* ── Scenarios container ── */
+        #scenarios-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Scenario wrapper ── */
+        .scenario {
+            padding: 1.25rem 0;
+        }
+
+        .scenario + .scenario {
+            border-top: 2px dashed var(--border);
+        }
+
+        /* Hide scenario header when only one scenario exists */
+        #scenarios-container .scenario:only-child .scenario-header {
+            display: none;
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: .9rem;
+        }
+
+        .scenario-label {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .09em;
+            color: var(--muted);
+        }
+
+        .scenario-remove-btn {
+            margin-left: auto;
+            padding: .2rem .65rem;
+            border: 1.5px solid var(--border);
+            border-radius: 999px;
+            background: #fff;
+            font-family: inherit;
+            font-size: .75rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            transition: border-color .15s, color .15s, background .15s;
+        }
+
+        .scenario-remove-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        /* ── Scenario cards grid ── */
+        .scenario-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1.25rem;
             align-items: start;
+        }
+
+        /* ── Add scenario button ── */
+        .add-scenario-wrap {
+            padding: 1.5rem 0 2.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .add-scenario-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .55rem 1.4rem;
+            border: 2px dashed var(--border);
+            border-radius: 999px;
+            background: transparent;
+            font-family: inherit;
+            font-size: .875rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            transition: border-color .15s, color .15s, background .15s, border-style .15s;
+        }
+
+        .add-scenario-btn:hover {
+            border-color: #3b82f6;
+            border-style: solid;
+            color: #3b82f6;
+            background: #eff6ff;
         }
 
         /* ── Card ── */
@@ -195,17 +287,9 @@
             flex-shrink: 0;
         }
 
-        .swim-dot {
-            background: var(--swim);
-        }
-
-        .bike-dot {
-            background: var(--bike);
-        }
-
-        .run-dot {
-            background: var(--run);
-        }
+        .swim-dot { background: var(--swim); }
+        .bike-dot { background: var(--bike); }
+        .run-dot  { background: var(--run);  }
 
         .sport-label {
             display: flex;
@@ -311,7 +395,6 @@
             grid-column: 1 / 4;
         }
 
-        /* Section 2 helper text */
         .field-hint {
             font-size: .72rem;
             color: var(--muted);
@@ -363,21 +446,10 @@
             transition: width .35s cubic-bezier(.4, 0, .2, 1);
         }
 
-        .swim-bar {
-            background: var(--swim);
-        }
-
-        .bike-bar {
-            background: var(--bike);
-        }
-
-        .run-bar {
-            background: var(--run);
-        }
-
-        .t-bar {
-            background: var(--t);
-        }
+        .swim-bar { background: var(--swim); }
+        .bike-bar { background: var(--bike); }
+        .run-bar  { background: var(--run);  }
+        .t-bar    { background: var(--t);    }
 
         .result-time {
             font-variant-numeric: tabular-nums;
@@ -414,7 +486,7 @@
             letter-spacing: -.03em;
         }
 
-        /* ── Share button ── */
+        /* ── Share / Reset buttons ── */
         .share-btn {
             display: inline-flex;
             align-items: center;
@@ -514,12 +586,73 @@
             color: #fff;
         }
 
+        /* ── Cumulative time icon ── */
+        .cumul-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+        }
+
+        .cumul-icon {
+            font-size: .85rem;
+            line-height: 1;
+            color: var(--muted);
+            cursor: default;
+            opacity: .45;
+            transition: opacity .15s;
+            user-select: none;
+        }
+
+        .cumul-wrap:hover .cumul-icon { opacity: 1; }
+
+        .cumul-tooltip {
+            position: absolute;
+            right: calc(100% + 8px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #0f172a;
+            color: #fff;
+            font-size: .75rem;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            padding: .28rem .6rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .15s;
+            z-index: 20;
+        }
+
+        .cumul-tooltip::after {
+            content: '';
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-left-color: #0f172a;
+        }
+
+        .cumul-wrap:hover .cumul-tooltip { opacity: 1; }
+        .cumul-wrap.no-data .cumul-icon  { opacity: .2; }
+
         /* ── Responsive ── */
         @media (max-width: 1600px) {
             main {
                 max-width: 740px;
+                padding: 1.25rem 1rem 1rem;
+            }
+
+            .scenario-cards {
                 grid-template-columns: 1fr;
-                padding: 1.25rem 1rem 3rem;
+            }
+
+            .add-scenario-wrap {
+                padding: 1.25rem 0 3rem;
             }
         }
 
@@ -573,67 +706,6 @@
                 grid-column: 1 / -1;
             }
         }
-
-        /* ── Cumulative time icon ── */
-        .cumul-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 22px;
-        }
-
-        .cumul-icon {
-            font-size: .85rem;
-            line-height: 1;
-            color: var(--muted);
-            cursor: default;
-            opacity: .45;
-            transition: opacity .15s;
-            user-select: none;
-        }
-
-        .cumul-wrap:hover .cumul-icon {
-            opacity: 1;
-        }
-
-        .cumul-tooltip {
-            position: absolute;
-            right: calc(100% + 8px);
-            top: 50%;
-            transform: translateY(-50%);
-            background: #0f172a;
-            color: #fff;
-            font-size: .75rem;
-            font-weight: 500;
-            font-variant-numeric: tabular-nums;
-            padding: .28rem .6rem;
-            border-radius: 6px;
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity .15s;
-            z-index: 20;
-        }
-
-        .cumul-tooltip::after {
-            content: '';
-            position: absolute;
-            left: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 5px solid transparent;
-            border-left-color: #0f172a;
-        }
-
-        .cumul-wrap:hover .cumul-tooltip {
-            opacity: 1;
-        }
-
-        .cumul-wrap.no-data .cumul-icon {
-            opacity: .2;
-        }
     </style>
 </head>
 <body>
@@ -644,198 +716,10 @@
 </header>
 
 <main>
-
-    <!-- ══ 1 — Distances ══ -->
-    <section class="card">
-        <div class="card-header">
-            <span class="step">1</span>
-            <h2>Race Distances</h2>
-            <div class="presets">
-                <button class="preset-btn" data-race="sprint">Sprint</button>
-                <button class="preset-btn" data-race="olympic">Olympic</button>
-                <button class="preset-btn" data-race="t100">T100</button>
-                <button class="preset-btn" data-race="703">70.3</button>
-                <button class="preset-btn" data-race="ironman">Ironman</button>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="dist-grid">
-
-                <div class="dist-row">
-                    <div class="sport-label"><span class="sport-dot swim-dot"></span>🏊 Swim</div>
-                    <input type="number" id="swim-dist" placeholder="1500" min="0" step="any"/>
-                    <select id="swim-unit">
-                        <option value="m">meters</option>
-                        <option value="yd">yards</option>
-                        <option value="km">km</option>
-                        <option value="mi">miles</option>
-                    </select>
-                </div>
-
-                <div class="dist-row">
-                    <div class="sport-label"><span class="sport-dot bike-dot"></span>🚴 Bike</div>
-                    <input type="number" id="bike-dist" placeholder="40" min="0" step="any"/>
-                    <select id="bike-unit">
-                        <option value="km">km</option>
-                        <option value="mi">miles</option>
-                    </select>
-                </div>
-
-                <div class="dist-row">
-                    <div class="sport-label"><span class="sport-dot run-dot"></span>🏃 Run</div>
-                    <input type="number" id="run-dist" placeholder="10" min="0" step="any"/>
-                    <select id="run-unit">
-                        <option value="km">km</option>
-                        <option value="mi">miles</option>
-                    </select>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ 2 — Pace & Transitions ══ -->
-    <section class="card">
-        <div class="card-header">
-            <span class="step">2</span>
-            <h2>Target Pace &amp; Transitions</h2>
-        </div>
-        <div class="card-body">
-            <div class="pace-grid">
-
-                <!-- Swim -->
-                <div class="pace-row">
-                    <div class="sport-label"><span class="sport-dot swim-dot"></span>🏊 Swim</div>
-                    <div class="pace-input-wrap">
-                        <input type="text" id="swim-pace" placeholder="1:45" maxlength="6" inputmode="numeric"/>
-                        <span class="pace-unit-badge" id="swim-pace-label">/ 100m</span>
-                    </div>
-                    <span class="arrow-sep">⇄</span>
-                    <input type="text" id="swim-time" placeholder="0:26:15" maxlength="8" inputmode="numeric"/>
-                </div>
-
-                <!-- Bike -->
-                <div class="pace-row">
-                    <div class="sport-label"><span class="sport-dot bike-dot"></span>🚴 Bike</div>
-                    <div class="pace-input-wrap">
-                        <input type="number" id="bike-speed" placeholder="32.5" min="1" max="120" step="0.1"/>
-                        <span class="pace-unit-badge" id="bike-speed-label">km/h</span>
-                    </div>
-                    <span class="arrow-sep">⇄</span>
-                    <input type="text" id="bike-time" placeholder="1:13:50" maxlength="8" inputmode="numeric"/>
-                </div>
-
-                <!-- Run -->
-                <div class="pace-row">
-                    <div class="sport-label"><span class="sport-dot run-dot"></span>🏃 Run</div>
-                    <div class="pace-input-wrap">
-                        <input type="text" id="run-pace" placeholder="5:30" maxlength="6" inputmode="numeric"/>
-                        <span class="pace-unit-badge" id="run-pace-label">/ km</span>
-                    </div>
-                    <span class="arrow-sep">⇄</span>
-                    <input type="text" id="run-time" placeholder="0:55:00" maxlength="8" inputmode="numeric"/>
-                </div>
-
-                <p class="field-hint">Enter pace <em>or</em> time — the other updates automatically.</p>
-
-                <div class="pace-divider"></div>
-
-                <!-- T1 -->
-                <div class="pace-row">
-                    <div class="transition-label"><span class="t-badge">T1</span>Transition 1</div>
-                    <input type="text" id="t1-time" placeholder="5:00" maxlength="5" inputmode="numeric"/>
-                </div>
-
-                <!-- T2 -->
-                <div class="pace-row">
-                    <div class="transition-label"><span class="t-badge">T2</span>Transition 2</div>
-                    <input type="text" id="t2-time" placeholder="3:00" maxlength="5" inputmode="numeric"/>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ 3 — Results ══ -->
-    <section class="card">
-        <div class="card-header">
-            <span class="step">3</span>
-            <h2>Race Summary</h2>
-            <button class="share-btn reset-btn" id="reset-btn">&#8635; Reset</button>
-            <button class="share-btn" id="share-btn">&#128279; Share</button>
-        </div>
-        <div class="card-body">
-            <div class="results-list">
-
-                <div class="result-item">
-                    <div class="result-label"><span class="sport-dot swim-dot"></span>🏊 Swim</div>
-                    <div class="result-bar-track">
-                        <div class="result-bar swim-bar" id="swim-bar" style="width:0%"></div>
-                    </div>
-                    <div class="result-time" id="result-swim">—</div>
-                    <div class="cumul-wrap no-data" id="cumul-swim-wrap">
-                        <span class="cumul-icon">⏱</span>
-                        <span class="cumul-tooltip" id="cumul-swim">—</span>
-                    </div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label t-label"><span class="t-badge">T1</span>Transition</div>
-                    <div class="result-bar-track">
-                        <div class="result-bar t-bar" id="t1-bar" style="width:0%"></div>
-                    </div>
-                    <div class="result-time muted" id="result-t1">—</div>
-                    <div class="cumul-wrap no-data" id="cumul-t1-wrap">
-                        <span class="cumul-icon">⏱</span>
-                        <span class="cumul-tooltip" id="cumul-t1">—</span>
-                    </div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label"><span class="sport-dot bike-dot"></span>🚴 Bike</div>
-                    <div class="result-bar-track">
-                        <div class="result-bar bike-bar" id="bike-bar" style="width:0%"></div>
-                    </div>
-                    <div class="result-time" id="result-bike">—</div>
-                    <div class="cumul-wrap no-data" id="cumul-bike-wrap">
-                        <span class="cumul-icon">⏱</span>
-                        <span class="cumul-tooltip" id="cumul-bike">—</span>
-                    </div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label t-label"><span class="t-badge">T2</span>Transition</div>
-                    <div class="result-bar-track">
-                        <div class="result-bar t-bar" id="t2-bar" style="width:0%"></div>
-                    </div>
-                    <div class="result-time muted" id="result-t2">—</div>
-                    <div class="cumul-wrap no-data" id="cumul-t2-wrap">
-                        <span class="cumul-icon">⏱</span>
-                        <span class="cumul-tooltip" id="cumul-t2">—</span>
-                    </div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label"><span class="sport-dot run-dot"></span>🏃 Run</div>
-                    <div class="result-bar-track">
-                        <div class="result-bar run-bar" id="run-bar" style="width:0%"></div>
-                    </div>
-                    <div class="result-time" id="result-run">—</div>
-                    <div class="cumul-wrap no-data" id="cumul-run-wrap">
-                        <span class="cumul-icon">⏱</span>
-                        <span class="cumul-tooltip" id="cumul-run">—</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="total-row">
-                <span class="total-label">Total Time</span>
-                <span class="total-time" id="result-total">—</span>
-            </div>
-        </div>
-    </section>
-
+    <div id="scenarios-container"></div>
+    <div class="add-scenario-wrap">
+        <button id="add-scenario-btn" class="add-scenario-btn">＋ New scenario</button>
+    </div>
 </main>
 
 <div class="dialog-backdrop" id="reset-dialog">

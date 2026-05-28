@@ -53,6 +53,10 @@ Every change is reflected in the URL query string via `history.replaceState`. Hi
 ### Reset with confirmation
 The **Reset** button opens a confirmation dialog before clearing all inputs and restoring default units, so accidental clicks don't lose your work.
 
+### New scenario
+
+Create a new scenario withing the same page to compare plans
+
 ## Development
 
 ```bash
