@@ -261,7 +261,27 @@ function scenarioHTML(p, isMain) {
 
 let _scenarioCount = 0;
 
-function createScenario({ isMain = false } = {}) {
+function captureValues(p) {
+  const $ = id => document.getElementById(`${p}-${id}`);
+  return {
+    swimDist:  $('swim-dist').value,
+    swimUnit:  $('swim-unit').value,
+    swimPace:  $('swim-pace').value,
+    swimTime:  $('swim-time').value,
+    bikeDist:  $('bike-dist').value,
+    bikeUnit:  $('bike-unit').value,
+    bikeSpeed: $('bike-speed').value,
+    bikeTime:  $('bike-time').value,
+    runDist:   $('run-dist').value,
+    runUnit:   $('run-unit').value,
+    runPace:   $('run-pace').value,
+    runTime:   $('run-time').value,
+    t1Time:    $('t1-time').value,
+    t2Time:    $('t2-time').value,
+  };
+}
+
+function createScenario({ isMain = false, initialValues = null } = {}) {
   const idx    = _scenarioCount++;
   const prefix = `s${idx}`;
 
@@ -284,12 +304,12 @@ function createScenario({ isMain = false } = {}) {
     });
   }
 
-  initScenario(prefix, isMain);
+  initScenario(prefix, isMain, initialValues);
 }
 
 // ─── Scenario logic ───────────────────────────────────────────────────────────
 
-function initScenario(p, isMain) {
+function initScenario(p, isMain, initialValues = null) {
   const $  = id => document.getElementById(`${p}-${id}`);
   const el = $('reset-btn').closest('.scenario');
 
@@ -297,6 +317,24 @@ function initScenario(p, isMain) {
   let prevSwimUnit = 'm';
   let prevBikeUnit = 'km';
   let prevRunUnit  = 'km';
+
+  // ── Pre-populate from duplicated scenario ──
+  if (initialValues) {
+    if (initialValues.swimDist)  $('swim-dist').value  = initialValues.swimDist;
+    if (initialValues.swimUnit)  { $('swim-unit').value  = initialValues.swimUnit;  prevSwimUnit = initialValues.swimUnit; }
+    if (initialValues.swimPace)  $('swim-pace').value  = initialValues.swimPace;
+    if (initialValues.swimTime)  $('swim-time').value  = initialValues.swimTime;
+    if (initialValues.bikeDist)  $('bike-dist').value  = initialValues.bikeDist;
+    if (initialValues.bikeUnit)  { $('bike-unit').value  = initialValues.bikeUnit;  prevBikeUnit = initialValues.bikeUnit; }
+    if (initialValues.bikeSpeed) $('bike-speed').value = initialValues.bikeSpeed;
+    if (initialValues.bikeTime)  $('bike-time').value  = initialValues.bikeTime;
+    if (initialValues.runDist)   $('run-dist').value   = initialValues.runDist;
+    if (initialValues.runUnit)   { $('run-unit').value   = initialValues.runUnit;   prevRunUnit  = initialValues.runUnit; }
+    if (initialValues.runPace)   $('run-pace').value   = initialValues.runPace;
+    if (initialValues.runTime)   $('run-time').value   = initialValues.runTime;
+    if (initialValues.t1Time)    $('t1-time').value    = initialValues.t1Time;
+    if (initialValues.t2Time)    $('t2-time').value    = initialValues.t2Time;
+  }
 
   // ── Load from URL (main scenario only) ──
   if (isMain) {
@@ -618,4 +656,14 @@ createScenario({ isMain: true });
 document.getElementById('add-scenario-btn').addEventListener('click', () => {
   createScenario({ isMain: false });
   track('scenario_add');
+});
+
+document.getElementById('duplicate-scenario-btn').addEventListener('click', () => {
+  const container = document.getElementById('scenarios-container');
+  const lastScenario = container.lastElementChild;
+  const lastPrefix = lastScenario.querySelector('[id$="-reset-btn"]').id.replace('-reset-btn', '');
+  const values = captureValues(lastPrefix);
+  createScenario({ isMain: false, initialValues: values });
+  track('scenario_duplicate');
+  container.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });

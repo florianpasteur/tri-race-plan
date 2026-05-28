@@ -132,6 +132,30 @@
             background: #fef2f2;
         }
 
+        .duplicate-scenario-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .55rem 1.4rem;
+            margin: 1em;
+            border: 2px dashed var(--border);
+            border-radius: 999px;
+            background: transparent;
+            font-family: inherit;
+            font-size: .875rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            transition: border-color .15s, color .15s, background .15s, border-style .15s;
+        }
+
+        .duplicate-scenario-btn:hover {
+            border-color: #3b82f6;
+            border-style: solid;
+            color: #3b82f6;
+            background: #eff6ff;
+        }
+
         /* ── Scenario cards grid ── */
         .scenario-cards {
             display: grid;
@@ -154,6 +178,7 @@
             padding: .55rem 1.4rem;
             border: 2px dashed var(--border);
             border-radius: 999px;
+            margin: 1em;
             background: transparent;
             font-family: inherit;
             font-size: .875rem;
@@ -719,6 +744,7 @@
     <div id="scenarios-container"></div>
     <div class="add-scenario-wrap">
         <button id="add-scenario-btn" class="add-scenario-btn">＋ New scenario</button>
+        <button id="duplicate-scenario-btn" class="duplicate-scenario-btn">&#10697; Duplicate scenario</button>
     </div>
 </main>
 
