@@ -702,17 +702,27 @@
             }
         }
 
-        @media (max-width: 540px) {
-            .dist-row {
-                grid-template-columns: 1fr 110px;
+        @media (max-width: 1249px) {
+            main {
+                max-width: 740px;
             }
 
-            .pace-row {
-                grid-template-columns: 1fr 22px 110px;
+            .scenario-cards {
+                grid-template-columns: 1fr;
             }
 
+            .add-scenario-wrap,
+            .duplicate-scenario-btn {
+                display: none;
+            }
+
+            .result-bar-track {
+                display: none;
+            }
+
+            /* Remove bar column from result row */
             .result-item {
-                grid-template-columns: 1fr 90px 22px;
+                grid-template-columns: 1fr 22px;
             }
         }
     </style>
