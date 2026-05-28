@@ -666,61 +666,19 @@
         .cumul-wrap.no-data .cumul-icon  { opacity: .2; }
 
         /* ── Responsive ── */
-        @media (max-width: 1600px) {
-            main {
-                max-width: 740px;
-                padding: 1.25rem 1rem 1rem;
-            }
 
-            .scenario-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .add-scenario-wrap {
-                padding: 1.25rem 0 3rem;
-            }
-        }
-
-        @media (max-width: 1100px) and (min-width: 769px) {
+        /* Label on top of inputs / results for medium and smaller screens */
+        @media (max-width: 1499px) {
             .dist-row {
-                grid-template-columns: 80px 1fr 100px;
+                grid-template-columns: 1fr 130px;
+            }
+
+            .dist-row .sport-label {
+                grid-column: 1 / -1;
             }
 
             .pace-row {
-                grid-template-columns: 80px 1fr 22px 100px;
-            }
-
-            .field-hint {
-                padding-left: 80px;
-            }
-
-            .result-item {
-                grid-template-columns: 80px 1fr 85px 22px;
-            }
-        }
-
-        @media (max-width: 540px) {
-            .dist-row {
-                grid-template-columns: 80px 1fr 110px;
-            }
-
-            .pace-row {
-                grid-template-columns: 80px 1fr 22px 110px;
-            }
-
-            .field-hint {
-                padding-left: 80px;
-            }
-
-            .result-item {
-                grid-template-columns: 80px 1fr 90px 22px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .pace-row {
-                grid-template-columns: 1fr 22px 1fr;
-                grid-template-rows: auto auto;
+                grid-template-columns: 1fr 28px 130px;
             }
 
             .pace-row .sport-label {
@@ -729,6 +687,32 @@
 
             .transition-label {
                 grid-column: 1 / -1;
+            }
+
+            .field-hint {
+                padding-left: 0;
+            }
+
+            .result-item {
+                grid-template-columns: 1fr 100px 22px;
+            }
+
+            .result-item .result-label {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .dist-row {
+                grid-template-columns: 1fr 110px;
+            }
+
+            .pace-row {
+                grid-template-columns: 1fr 22px 110px;
+            }
+
+            .result-item {
+                grid-template-columns: 1fr 90px 22px;
             }
         }
     </style>
